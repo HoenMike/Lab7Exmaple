@@ -25,7 +25,25 @@ public class UserDB {
         }
     }
 
+    public static boolean emailExists(String email) {
+        String query = "SELECT email FROM user WHERE email = ?";
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASS); PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error occurred", e);
+        }
+    }
+
     public static long insert(User user) {
+        if (emailExists(user.getEmail())) {
+            return 0; // Email already exists, do not insert
+        }
+
         String query = "INSERT INTO user (firstName, lastName, email) VALUES (?, ?, ?)";
 
         try (Connection connection = DriverManager.getConnection(URL, USER, PASS); PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -48,7 +66,10 @@ public class UserDB {
 
     public static List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM user";
+        String query = "SELECT * FROM user"
+
+    ;
+
 
         try (Connection connection = DriverManager.getConnection(URL, USER, PASS); PreparedStatement ps = connection.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
 

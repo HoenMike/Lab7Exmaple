@@ -35,11 +35,17 @@ public class EmailListServlet extends HttpServlet {
             String email = request.getParameter("email");
             // store data in User object and save User object in database
             User user = new User(firstName, lastName, email);
-            UserDB.insert(user);
-
-            // set User object in request object and set URL
-            request.setAttribute("user", user);
-            url = "/thanks.jsp";   // the "thanks" page
+            if (UserDB.emailExists(email)) {
+                request.setAttribute("message", "This email address already exists.");
+                request.setAttribute("user", user);
+                url = "/thanks.jsp"; // redirect to the thanks page with a duplicate message
+            } else {
+                UserDB.insert(user);
+                // set User object in request object and set URL
+                request.setAttribute("user", user);
+                request.setAttribute("message", "Thanks for joining our email list!");
+                url = "/thanks.jsp";   // the "thanks" page
+            }
         }
 
         // forward request and response objects to specified URL
