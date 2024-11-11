@@ -39,8 +39,38 @@
 			<button type="submit" class="btn btn-secondary">Return</button>
 		</form>
 
+		<!-- Toast Notification -->
+		<div
+			class="toast"
+			id="toast"
+			style="position: absolute; top: 20px; right: 20px"
+			data-delay="3000"
+		>
+			<div class="toast-header">
+				<strong class="mr-auto">Notification</strong>
+				<button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+			</div>
+			<div class="toast-body" id="toast-body">
+				<!-- Message will be inserted here -->
+			</div>
+		</div>
+
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script>
+			$(document).ready(function () {
+				var message = "${message}";
+				if (message) {
+					$("#toast-body").text(message);
+					if (message.includes("already exists")) {
+						$("#toast").addClass("bg-danger text-white");
+					} else {
+						$("#toast").addClass("bg-success text-white");
+					}
+					$("#toast").toast("show");
+				}
+			});
+		</script>
 	</body>
 </html>
